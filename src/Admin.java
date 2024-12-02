@@ -1,147 +1,169 @@
 import java.io.IOException;
 import java.util.*;
 
-public class Admin extends Products implements Manageable {
-Order order = new Order();
+public class Admin extends Person {
+    private List<Product> products = new ArrayList<>(); // List to store Product objects
+    private Scanner input = new Scanner(System.in);
+    private Order order = new Order(); // Assuming an Order class exists
+
+    public Admin() {
+    }
+
+    public Admin(String name, String username, String email, String password, String phone, String address) {
+        super(name, username, email, password, phone, address);
+    }
+
     @Override
-    // Method for admin login
-    public void login() {
-        // Hard-coded admin credentials
-        String adminUsername = "s";
-        String adminPassword = "s";
+    public void signup(String name, String username, String email) {
+        throw new UnsupportedOperationException("Admin signup is not supported.");
+    }
 
-        Scanner input = new Scanner(System.in);
+    @Override
+    public void signin(String username, String email, String password) {
+        // Hard-coded admin credentials (for demonstration only; replace with secure authentication)
+        String adminUsername = "admin";
+        String adminPassword = "admin";
 
-        // Get username and password from admin
-        System.out.print("Enter Admin Username: ");
-        String username = input.nextLine();
-        System.out.print("Enter Admin Password: ");
-        String password = input.nextLine();
+        System.out.print("Enter Username: ");
+        username = input.nextLine();
+        System.out.print("Enter Password: ");
+        password = input.nextLine();
 
-        // Validate admin credentials
         if (adminUsername.equals(username) && adminPassword.equals(password)) {
             System.out.println("You have successfully logged in!");
-
-            // Display options for admin
-            System.out.println("1. Add Product");
-            System.out.println("2. Remove Product");
-            System.out.println("3. Update Product"); // Pending implementation...
-            System.out.println("4. View Orders");
-
-            // Handle menu options
-            switch (input.nextInt()) {
-                case 1:
-                    addProduct();
-                    break;
-                case 2:
-                    removeProduct();
-                    break;
-                case 3:
-                    updateProducts(); // Method yet to be implemented
-                    break;
-                case 4:
-                    vieworders();
-                default:
-                    System.out.println("Invalid option selected.");
-            }
         } else {
-            // Provide feedback on incorrect username or password
-            if (!adminUsername.equals(username)) {
-                System.out.println("The username you have entered is incorrect!");
-            }
-            if (!adminPassword.equals(password)) {
-                System.out.println("The password you have entered is incorrect!");
-            }
-            if (!adminUsername.equals(username) && !adminPassword.equals(password)) {
-                System.out.println("The username & password you have entered are incorrect!");
-            }
+            System.out.println("Invalid username or password.");
         }
     }
 
-    // Method for adding a product (accessible only by admins)
-    protected void addProduct() {
-        // Get product details from admin
-        System.out.println("Enter Product ID: ");
-        String id = input.next();
-        prodId.add(id);
+    public void addProduct() {
+        System.out.println("Enter Product Details:");
 
-        System.out.println("Enter Product Name: ");
-        String name = input.next();
-        prodName.add(name);
+        System.out.print("Product ID: ");
+        int id = input.nextInt();
+        input.nextLine(); // Consume newline
 
-        System.out.println("Enter Company Name: ");
-        String company = input.next();
-        prodCompany.add(company);
+        System.out.print("Product Name: ");
+        String name = input.nextLine();
 
-        System.out.println("Enter Product Price: ");
-        String price = input.next();
-        prodPrice.add(price);
+        System.out.print("Company Name: ");
+        String company = input.nextLine();
 
-        System.out.println("Enter Product Stock: ");
-        String stock = input.next();
-        prodStock.add(stock);
+        System.out.print("Product Price: ");
+        double price = input.nextDouble();
 
-        // Confirm that the product has been added
-        System.out.println("Product Added Successfully!");
+        System.out.print("Stock Quantity: ");
+        int stock = input.nextInt();
+        input.nextLine(); // Consume newline
 
-        // Load and save the updated product list
-        loadProducts();
-        saveProducts();
+        Product product = new Product(id, name, company, price, stock);
+        products.add(product);
+
+        System.out.println("Product added successfully!");
     }
 
-    // Method for removing a product (accessible only by admins)
-    protected void removeProduct() {
-        // Load products before attempting to remove one
-        loadProducts();
+    public void removeProduct() {
+        System.out.print("Enter the Product ID to remove: ");
+        int id = input.nextInt();
+        input.nextLine(); // Consume newline
 
-        // Get product ID from admin
-        System.out.println("Enter the product ID of the product you want to delete: ");
-        String pId = input.nextLine();
-
-        boolean prodFound = false;
-
-        // Search for the product by ID and remove it
-        for (int i = 0; i < prodId.size(); i++) {
-            if (prodId.get(i).equals(pId)) {
-                prodId.remove(i);
-                prodName.remove(i);
-                prodCompany.remove(i);
-                prodPrice.remove(i);
-                prodStock.remove(i);
-                prodFound = true;
+        boolean found = false;
+        for (int i = 0; i < products.size(); i++) {
+            if (products.get(i).getId() == id) {
+                products.remove(i);
+                found = true;
                 break;
             }
         }
 
-        // Confirm removal or indicate that the product was not found
-        if (prodFound) {
-            System.out.println("Product has been successfully deleted");
-            saveProducts();
+        if (found) {
+            System.out.println("Product removed successfully!");
         } else {
-            System.out.println("The product ID you have entered doesn't exist!");
+            System.out.println("Product not found.");
         }
     }
 
-    // Placeholder method for updating products (to be implemented)
-    public void updateProducts() {
-        // Implementation pending
+    public void updateProduct() {
+        System.out.print("Enter the Product ID to update: ");
+        int id = input.nextInt();
+        input.nextLine(); // Consume newline
+
+        boolean found = false;
+        for (Product product : products) {
+            if (product.getId() == id) {
+                found = true;
+
+                System.out.print("New Name (leave blank to keep current): ");
+                String name = input.nextLine();
+                if (!name.isEmpty()) {
+                    product.setName(name);
+                }
+
+                System.out.print("New Company (leave blank to keep current): ");
+                String company = input.nextLine();
+                if (!company.isEmpty()) {
+                    product.setCompany(company);
+                }
+
+                System.out.print("New Price (-1 to keep current): ");
+                double price = input.nextDouble();
+                if (price != -1) {
+                    product.setPrice(price);
+                }
+
+                System.out.print("New Stock (-1 to keep current): ");
+                int stock = input.nextInt();
+                input.nextLine(); // Consume newline
+                if (stock != -1) {
+                    product.setStock(stock);
+                }
+
+                System.out.println("Product updated successfully!");
+                break;
+            }
+        }
+
+        if (!found) {
+            System.out.println("Product not found.");
+        }
     }
-// dummy to implement intrface
+
+    public void viewOrders() throws IOException {
+        List<Order> orderList = order.loadOrders();
+        for (Order o : orderList) {
+            System.out.println(o);
+        }
+    }
+
     @Override
-    public void registration() {
-        // Optionally, provide a dummy implementation or leave it empty
-        throw new UnsupportedOperationException("Registration is not supported for Admins.");
+    public void logout() {
+        System.out.println("Logged out successfully.");
     }
 
-    public void vieworders(){
-        order.loadOrders();
-        for (int i = 0; i < order.orders.size(); i += 5) {
-            System.out.println("Product ID: " + order.orders.get(i));
-            System.out.println("Costumer Email: " + order.orders.get(i + 3));
-            System.out.println("Costumer Address: " + order.orders.get(i + 4));
-            System.out.println("Order Date: " + order.orders.get(i + 5));
-            System.out.println("Order Time: " + order.orders.get(i + 6));
-            System.out.println();
+    @Override
+    public void getProducts() {
+        if (products.isEmpty()) {
+            System.out.println("No products available.");
+        } else {
+            for (Product product : products) {
+                System.out.println(product);
+            }
         }
+    }
+
+    @Override
+    public Product getProductById(int id) {
+        for (Product product : products) {
+            if (product.getId() == id) {
+                return product;
+            }
+        }
+        System.out.println("Product not found.");
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
     }
 }
