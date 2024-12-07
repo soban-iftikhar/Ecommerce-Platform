@@ -33,14 +33,15 @@ public class Customer extends Person {
     }
 
     @Override
-    public void signin(String username, String email, String password) {
+    public boolean signIn(String username,String password) {
         for (int i = 0; i < usernames.size(); i++) {
             if (username.equals(usernames.get(i)) && password.equals(passwords.get(i))) {
                 System.out.println("Login successful!");
-                return;
+                return true;
             }
         }
         System.out.println("Invalid username or password.");
+        return false;
     }
 
     @Override
@@ -50,9 +51,11 @@ public class Customer extends Person {
     }
 
     @Override
-    public void getProducts() {
+    public List<Product> getProducts() {
         // remaining implementation
         System.out.println("Fetching products...");
+
+        return null;
     }
 
     @Override

@@ -1,3 +1,5 @@
+import java.util.List;
+
 public abstract class Person {
     protected String name;
     protected String username;
@@ -67,9 +69,9 @@ public abstract class Person {
     }
 
     public abstract void signup(String username, String email, String password);
-    public abstract void signin(String username, String email, String password);
+    public abstract boolean signIn(String username, String password);
     public abstract void logout();
-    public abstract void getProducts();
+    public abstract List<Product> getProducts();
     public abstract Product getProductById(int id);
 
 }

@@ -1,1 +1,2 @@
-456,Laptop,hp,70000,5
+456,Laptop,hp,70000.0,5
+567,mobile,iphone,56999.0,7
