@@ -1,21 +1,23 @@
+package Model;
+
 import java.io.IOException;
 import java.util.*;
 
 public class Admin extends Person {
     public Admin() {
-        // Load products when Admin is instantiated
+        // Load products when Model.Admin is instantiated
         Product.loadProductsFromFile();
     }
 
     public Admin(String name, String username, String email, String password, String phone, String address) {
         super(name, username, email, password, phone, address);
-        // Load products when Admin is instantiated
+        // Load products when Model.Admin is instantiated
         Product.loadProductsFromFile();
     }
 
     @Override
     public void signup(String name, String username, String email) {
-        throw new UnsupportedOperationException("Admin signup is not supported.");
+        throw new UnsupportedOperationException("Model.Admin signup is not supported.");
     }
 
     @Override
@@ -28,8 +30,7 @@ public class Admin extends Person {
 
     public void addProduct(int id, String name, String company, double price, int stock) {
         Product product = new Product(id, name, company, price, stock);
-        Product.getAllProducts().add(product);
-        Product.saveProductsToFile();
+        Product.addProduct(product);
     }
 
     public boolean removeProduct(int id) {
@@ -56,7 +57,7 @@ public class Admin extends Person {
     }
 
     public List<Order> viewOrders() throws IOException {
-        // Assuming Order class has a static method to load orders
+        // Assuming Model.Order class has a static method to load orders
         return Order.loadOrders();
     }
 
@@ -79,3 +80,4 @@ public class Admin extends Person {
         return super.toString();
     }
 }
+

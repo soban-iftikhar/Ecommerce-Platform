@@ -1,9 +1,12 @@
+package GUI;
+import Model.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.List;
+
 
 public class AdminGUI extends JFrame {
     private Admin admin;
@@ -314,4 +317,3 @@ public class AdminGUI extends JFrame {
         showLoginScreen();
     }
 }
-

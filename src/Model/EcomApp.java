@@ -1,3 +1,6 @@
+package Model;
+
+import GUI.AdminGUI;
 
 public class EcomApp {
 

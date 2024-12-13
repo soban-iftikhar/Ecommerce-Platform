@@ -1,16 +1,18 @@
-import java.io.*;
-import java.util.*;
+package Model;
 
-public class Product {
-    // Attributes
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Product implements Serializable {
+    private static final String FILE_NAME = "products.txt";
+    private static List<Product> productList = new ArrayList<>();
+
     private int id;
     private String name;
     private String company;
     private double price;
     private int stock;
-
-    // Static list to store all products
-    private static List<Product> productList = new ArrayList<>();
 
     // Constructor
     public Product(int id, String name, String company, double price, int stock) {
@@ -21,7 +23,7 @@ public class Product {
         this.stock = stock;
     }
 
-    // Getters and setters
+    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -62,50 +64,46 @@ public class Product {
         this.stock = stock;
     }
 
-    // Save products to file
+    // Methods for File Operations
     public static void saveProductsToFile() {
-        try (FileOutputStream fos = new FileOutputStream("Products.txt");
-             PrintStream ps = new PrintStream(fos)) {
-            for (Product product : productList) {
-                ps.println(product.id + "," + product.name + "," + product.company + "," + product.price + "," + product.stock);
-            }
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
+            oos.writeObject(productList);
         } catch (IOException e) {
-            System.out.println("Error saving products: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    // Load products from file
     public static void loadProductsFromFile() {
-        productList.clear();
-        try (FileInputStream fis = new FileInputStream("Products.txt");
-             Scanner input = new Scanner(fis)) {
-            while (input.hasNextLine()) {
-                String[] data = input.nextLine().split(",");
-                int id = Integer.parseInt(data[0]);
-                String name = data[1];
-                String company = data[2];
-                double price = Double.parseDouble(data[3]);
-                int stock = Integer.parseInt(data[4]);
-                productList.add(new Product(id, name, company, price, stock));
-            }
-        } catch (IOException e) {
-            System.out.println("Error loading products: " + e.getMessage());
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
+            productList = (List<Product>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            productList = new ArrayList<>();
         }
     }
 
-    // Get all products
-    public static List<Product> getAllProducts() {
-        return productList;
+    // Method to Add a Model.Product
+    public static boolean addProduct(Product product) {
+        if (findProductById(product.getId()) != null) {
+            return false;
+        }
+        productList.add(product);
+        saveProductsToFile();
+        return true;
     }
 
-    // Find a product by ID
+    // Method to Find a Model.Product by ID
     public static Product findProductById(int id) {
         for (Product product : productList) {
-            if (product.id == id) {
+            if (product.getId() == id) {
                 return product;
             }
         }
         return null;
+    }
+
+    // Method to Get All Products
+    public static List<Product> getAllProducts() {
+        return productList;
     }
 
     @Override
@@ -113,3 +111,4 @@ public class Product {
         return "ID: " + id + ", Name: " + name + ", Company: " + company + ", Price: " + price + ", Stock: " + stock;
     }
 }
+
